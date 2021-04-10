@@ -25,10 +25,10 @@ func main() {
 
 	fmt.Printf("res: %+v\n", res)
 
-	res, err = app.PostRootListChanges(0, 1, token.AccessToken, userId)
+	changeRes, err := app.PostRootListChanges(1, 3, res.Revision, token.AccessToken, userId)
 	if err != nil {
 		os.Exit(1)
 	}
 
-	fmt.Printf("res: %+v\n", res)
+	fmt.Printf("res: %+v\n", changeRes)
 }
