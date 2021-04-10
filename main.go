@@ -18,15 +18,17 @@ func main() {
 		os.Exit(1)
 	}
 
-	res, err := app.RootList(token.AccessToken, userId)
+	res, err := app.GetRootList(token.AccessToken, userId)
 	if err != nil {
 		os.Exit(1)
 	}
 
 	fmt.Printf("res: %+v\n", res)
 
-	err = app.Reorder(0, 1)
+	res, err = app.PostRootListChanges(0, 1, token.AccessToken, userId)
 	if err != nil {
 		os.Exit(1)
 	}
+
+	fmt.Printf("res: %+v\n", res)
 }
