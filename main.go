@@ -23,9 +23,26 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("res: %+v\n", res)
+	ops := []app.DeltaOps{
+		{
+			Kind: "MOV",
+			Mov: app.OpsMov{
+				FromIndex: 3,
+				Length:    1,
+				ToIndex:   1,
+			},
+		},
+		{
+			Kind: "MOV",
+			Mov: app.OpsMov{
+				FromIndex: 3,
+				Length:    1,
+				ToIndex:   2,
+			},
+		},
+	}
 
-	changeRes, err := app.PostRootListChanges(1, 3, res.Revision, token.AccessToken, userId)
+	changeRes, err := app.PostRootListChanges(ops, res.Revision, token.AccessToken, userId)
 	if err != nil {
 		os.Exit(1)
 	}
