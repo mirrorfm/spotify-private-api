@@ -13,7 +13,7 @@ func GetUserIdFromEnv() (string, bool) {
 	return os.LookupEnv("SPOTIFY_USER_ID")
 }
 
-func GetRootList(token, userId string) (*RootListResponse, error) {
+func GetRootList(token, userId string) (*RootListResponse, int, error) {
 	url := fmt.Sprintf("https://spclient.wg.spotify.com/playlist/v2/user/%s/rootlist?decorate=revision%%2Clength%%2Cattributes%%2Ctimestamp%%2Cowner", userId)
 	req, _ := http.NewRequest("GET", url, nil)
 
@@ -25,13 +25,13 @@ func GetRootList(token, userId string) (*RootListResponse, error) {
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("error during GET request")
-		return nil, err
+		return nil, 0, err
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("could not read request response body")
-		return nil, err
+		return nil, 0, err
 	}
 	_ = resp.Body.Close()
 
@@ -39,13 +39,13 @@ func GetRootList(token, userId string) (*RootListResponse, error) {
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		fmt.Println("could not read request response body")
-		return nil, err
+		return nil, 0, err
 	}
 
-	return &data, nil
+	return &data, resp.StatusCode, nil
 }
 
-func PostRootListChanges(ops []DeltaOps, baseRevision, token, userId string) (string, error) {
+func PostRootListChanges(ops []DeltaOps, baseRevision, token, userId string) (string, int, error) {
 	str := &ChangesPayload{
 		BaseRevision: baseRevision,
 		Deltas: []ChangeDelta{
@@ -58,7 +58,7 @@ func PostRootListChanges(ops []DeltaOps, baseRevision, token, userId string) (st
 	jsonStr, err := json.Marshal(str)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
-		return "", err
+		return "", 0, err
 	}
 
 	url := fmt.Sprintf("https://spclient.wg.spotify.com/playlist/v2/user/%s/rootlist/changes", userId)
@@ -73,17 +73,17 @@ func PostRootListChanges(ops []DeltaOps, baseRevision, token, userId string) (st
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("error during POST request")
-		return "", err
+		return "", 0, err
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("could not read request response body")
-		return "", err
+		return "", 0, err
 	}
 	_ = resp.Body.Close()
 
 	res := string(body)
 
-	return res, nil
+	return res, resp.StatusCode, nil
 }

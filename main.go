@@ -18,10 +18,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	res, err := app.GetRootList(token.AccessToken, userId)
+	res, status, err := app.GetRootList(token.AccessToken, userId)
 	if err != nil {
 		os.Exit(1)
 	}
+
+	fmt.Printf("%d\n", status)
 
 	ops := []app.DeltaOps{
 		{
@@ -42,10 +44,10 @@ func main() {
 		},
 	}
 
-	changeRes, err := app.PostRootListChanges(ops, res.Revision, token.AccessToken, userId)
+	changeRes, status, err := app.PostRootListChanges(ops, res.Revision, token.AccessToken, userId)
 	if err != nil {
 		os.Exit(1)
 	}
 
-	fmt.Printf("res: %+v\n", changeRes)
+	fmt.Printf("res: %d %+v\n", status, changeRes)
 }

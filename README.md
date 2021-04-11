@@ -5,7 +5,7 @@ Go client to expose useful Spotify endpoints not part of the pubic API
 
 ### **GET** `/rootlist`
 
-Get all playlists order
+Get all playlists in their current display order
 
 ### **POST** `/rootlist/changes`
 
