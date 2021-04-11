@@ -38,14 +38,14 @@ func GetRootList(token, userId string) (*RootListResponse, int, error) {
 	data := RootListResponse{}
 	err = json.Unmarshal(body, &data)
 	if err != nil {
-		fmt.Println("could not read request response body")
+		fmt.Println("could not unmarshal JSON body")
 		return nil, 0, err
 	}
 
 	return &data, resp.StatusCode, nil
 }
 
-func PostRootListChanges(ops []DeltaOps, baseRevision, token, userId string) (string, int, error) {
+func PostRootListChanges(ops []DeltaOps, baseRevision, token, userId string) (*RootListChangeResponse, int, error) {
 	str := &ChangesPayload{
 		BaseRevision: baseRevision,
 		Deltas: []ChangeDelta{
@@ -58,7 +58,7 @@ func PostRootListChanges(ops []DeltaOps, baseRevision, token, userId string) (st
 	jsonStr, err := json.Marshal(str)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
-		return "", 0, err
+		return nil, 0, err
 	}
 
 	url := fmt.Sprintf("https://spclient.wg.spotify.com/playlist/v2/user/%s/rootlist/changes", userId)
@@ -73,17 +73,22 @@ func PostRootListChanges(ops []DeltaOps, baseRevision, token, userId string) (st
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("error during POST request")
-		return "", 0, err
+		return nil, 0, err
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("could not read request response body")
-		return "", 0, err
+		return nil, 0, err
 	}
 	_ = resp.Body.Close()
 
-	res := string(body)
+	data := RootListChangeResponse{}
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		fmt.Println("could not unmarshal JSON body")
+		return nil, 0, err
+	}
 
-	return res, resp.StatusCode, nil
+	return &data, resp.StatusCode, nil
 }

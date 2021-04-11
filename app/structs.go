@@ -49,6 +49,18 @@ type RootListResponse struct {
 	Contents  RootListResponseContents `json:"contents"`
 }
 
+type SyncResult struct {
+	FromRevision string `json:"fromRevision"`
+	ToRevision   string `json:"toRevision"`
+}
+
+type RootListChangeResponse struct {
+	Revision           string     `json:"revision"`
+	MultipleHeads      bool       `json:"multipleHeads"`
+	ResultingRevisions []string   `json:"resultingRevisions"`
+	SyncResult         SyncResult `json:"syncResult"`
+}
+
 type ChangeDelta struct {
 	Ops []DeltaOps `json:"ops"`
 }
