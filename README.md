@@ -1,5 +1,5 @@
 # unofficial-spotify-api
-Go client to expose useful Spotify endpoints not part of the pubic API
+Go client to expose useful Spotify endpoints not part of the public API
 
 ## Endpoints
 
